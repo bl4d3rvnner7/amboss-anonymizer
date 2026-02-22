@@ -1,7 +1,7 @@
 # AMBOSS Anonymizer
 
 <p align="center">
-  <b>Privacy toggle for AMBOSS Next</b><br>
+  <b>Privacy toggle for AMBOSS</b><br>
   Built for medical education privacy.
 </p>
 
