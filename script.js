@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         AMBOSS Anonymizer
 // @namespace    https://github.com/bl4d3rvnner7/amboss-anonymizer
-// @version      1.0
+// @version      1.1
 // @icon         https://next.amboss.com/de/static/assets/5dd152c6ee89d94c.png
 // @description  Censors name and avatar on AMBOSS with toggle panel
 // @author       scarlettaowner
@@ -10,83 +10,92 @@
 // @grant        none
 // @license      MIT
 // ==/UserScript==
- 
+
 (function () {
     'use strict';
- 
+
     const STORAGE_KEY = "amboss-anonymizer-enabled";
     let enabled = localStorage.getItem(STORAGE_KEY) !== "false"; // default ON
- 
+
     function censorInteractiveBoxes() {
         if (!enabled) return;
- 
+
         const buttons = document.querySelectorAll('button[data-ds-id="InteractiveBox"]');
- 
+
         buttons.forEach(button => {
- 
+
+            // ✅ ONLY anonymize if this button contains an Avatar
+            const avatar = button.querySelector('[data-ds-id="Avatar"]');
+            if (!avatar) return;
+
             if (button.dataset.anonymized === "true") return;
             button.dataset.anonymized = "true";
- 
+
             // Avatar letter
-            const avatarText = button.querySelector('[data-ds-id="Avatar"] span');
+            const avatarText = avatar.querySelector('span');
             if (avatarText) {
                 avatarText.dataset.original = avatarText.textContent;
                 avatarText.textContent = "•";
             }
- 
+
             // aria-label
-            const avatar = button.querySelector('[data-ds-id="Avatar"]');
-            if (avatar) {
-                avatar.dataset.originalLabel = avatar.getAttribute("aria-label");
-                avatar.setAttribute("aria-label", "Anonymous");
-            }
- 
-            // Name (first TextClamped)
-            const textBlocks = button.querySelectorAll('p[data-ds-id="TextClamped"] span');
-            if (textBlocks.length > 0) {
-                textBlocks[0].dataset.original = textBlocks[0].textContent;
-                textBlocks[0].textContent = "██████";
+            avatar.dataset.originalLabel = avatar.getAttribute("aria-label");
+            avatar.setAttribute("aria-label", "Anonymous");
+
+            // Name (only inside this button)
+            const nameSpan = button.querySelector(
+                'p[data-ds-id="TextClamped"] span'
+            );
+
+            if (nameSpan) {
+                nameSpan.dataset.original = nameSpan.textContent;
+                nameSpan.textContent = "██████";
             }
         });
     }
- 
+
     function restoreInteractiveBoxes() {
         const buttons = document.querySelectorAll('button[data-ds-id="InteractiveBox"]');
- 
+
         buttons.forEach(button => {
- 
+
+            const avatar = button.querySelector('[data-ds-id="Avatar"]');
+            if (!avatar) return;
+
             button.dataset.anonymized = "false";
- 
-            const avatarText = button.querySelector('[data-ds-id="Avatar"] span');
+
+            const avatarText = avatar.querySelector('span');
             if (avatarText && avatarText.dataset.original) {
                 avatarText.textContent = avatarText.dataset.original;
             }
- 
-            const avatar = button.querySelector('[data-ds-id="Avatar"]');
-            if (avatar && avatar.dataset.originalLabel) {
+
+            if (avatar.dataset.originalLabel) {
                 avatar.setAttribute("aria-label", avatar.dataset.originalLabel);
             }
- 
-            const textBlocks = button.querySelectorAll('p[data-ds-id="TextClamped"] span');
-            if (textBlocks.length > 0 && textBlocks[0].dataset.original) {
-                textBlocks[0].textContent = textBlocks[0].dataset.original;
+
+            const nameSpan = button.querySelector(
+                'p[data-ds-id="TextClamped"] span'
+            );
+
+            if (nameSpan && nameSpan.dataset.original) {
+                nameSpan.textContent = nameSpan.dataset.original;
             }
         });
     }
- 
+
     function updateState(newState) {
         enabled = newState;
         localStorage.setItem(STORAGE_KEY, enabled);
         toggleButton.style.background = enabled ? "#22c55e" : "#ef4444";
         toggleButton.textContent = enabled ? "ON" : "OFF";
- 
+
         if (enabled) {
             censorInteractiveBoxes();
         } else {
             restoreInteractiveBoxes();
         }
     }
- 
+
     function createControlPanel() {
         const panel = document.createElement("div");
         panel.style.position = "fixed";
@@ -104,10 +113,10 @@
         panel.style.display = "flex";
         panel.style.alignItems = "center";
         panel.style.gap = "10px";
- 
+
         const label = document.createElement("span");
         label.textContent = "Anonymize";
- 
+
         toggleButton = document.createElement("button");
         toggleButton.style.border = "none";
         toggleButton.style.padding = "6px 12px";
@@ -115,41 +124,41 @@
         toggleButton.style.cursor = "pointer";
         toggleButton.style.fontWeight = "bold";
         toggleButton.style.color = "white";
- 
+
         toggleButton.onclick = () => {
             updateState(!enabled);
         };
- 
+
         panel.appendChild(label);
         panel.appendChild(toggleButton);
         document.body.appendChild(panel);
- 
+
         updateState(enabled);
     }
- 
+
     let toggleButton;
- 
+
     function init() {
         createControlPanel();
- 
+
         setTimeout(() => {
             if (enabled) censorInteractiveBoxes();
         }, 400);
- 
+
         const observer = new MutationObserver(() => {
             if (enabled) censorInteractiveBoxes();
         });
- 
+
         observer.observe(document.body, {
             childList: true,
             subtree: true
         });
     }
- 
+
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", init);
     } else {
         init();
     }
- 
+
 })();
