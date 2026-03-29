@@ -15,7 +15,7 @@
     'use strict';
 
     const STORAGE_KEY = "amboss-anonymizer-enabled";
-    let enabled = localStorage.getItem(STORAGE_KEY) !== "false";
+    let enabled = localStorage.getItem(STORAGE_KEY) !== "false"; // default ON
 
     function censorInteractiveBoxes() {
         if (!enabled) return;
@@ -24,21 +24,25 @@
 
         buttons.forEach(button => {
 
+            // ✅ ONLY anonymize if this button contains an Avatar
             const avatar = button.querySelector('[data-ds-id="Avatar"]');
             if (!avatar) return;
 
             if (button.dataset.anonymized === "true") return;
             button.dataset.anonymized = "true";
 
+            // Avatar letter
             const avatarText = avatar.querySelector('span');
             if (avatarText) {
                 avatarText.dataset.original = avatarText.textContent;
                 avatarText.textContent = "•";
             }
 
+            // aria-label
             avatar.dataset.originalLabel = avatar.getAttribute("aria-label");
             avatar.setAttribute("aria-label", "Anonymous");
 
+            // Name (only inside this button)
             const nameSpan = button.querySelector(
                 'p[data-ds-id="TextClamped"] span'
             );
@@ -104,7 +108,7 @@
         panel.style.boxShadow = "0 4px 12px rgba(0,0,0,0.3)";
         panel.style.zIndex = "99999";
         panel.style.color = "white";
-        panel.style.fontFamily = "Lato, -apple-system, BlinkMacSystemFont, sans-serif";
+        panel.style.fontFamily = "Arial, sans-serif";
         panel.style.fontSize = "14px";
         panel.style.display = "flex";
         panel.style.alignItems = "center";
