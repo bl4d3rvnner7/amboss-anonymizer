@@ -9,7 +9,7 @@
   <a href="https://greasyfork.org/en/scripts/567143-amboss-anonymizer">
     <img src="https://img.shields.io/badge/Install-GreasyFork-darkgreen?style=for-the-badge&logo=greasyfork">
   </a>
-  <img src="https://img.shields.io/badge/version-1.0-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/version-1.2-blue?style=for-the-badge">
   <img src="https://img.shields.io/badge/license-MIT-black?style=for-the-badge">
   <img src="https://img.shields.io/badge/privacy-medical%20education-purple?style=for-the-badge">
 </p>
