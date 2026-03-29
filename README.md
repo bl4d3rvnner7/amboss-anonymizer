@@ -46,7 +46,7 @@
 
 ### 2️⃣ Install Script
 
-👉 [https://greasyfork.org/en/scripts/567143-amboss-anonymizer](https://greasyfork.org/en/scripts/567143-amboss-anonymizer) or from [this repository](https://raw.githubusercontent.com/bl4d3rvnner7/amboss-anonymizer/refs/heads/main/script.js)
+👉 [https://greasyfork.org/en/scripts/571725-amboss-anonymizer](https://greasyfork.org/en/scripts/571725-amboss-anonymizer) or from [this repository](https://raw.githubusercontent.com/bl4d3rvnner7/amboss-anonymizer/refs/heads/main/script.js)
 
 ### 3️⃣ Visit
 
